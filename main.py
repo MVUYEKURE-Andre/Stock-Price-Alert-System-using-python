@@ -1,4 +1,5 @@
 import requests
+import datetime as dt
 
 STOCK_NAME = "TSLA"
 COMPANY_NAME = "Tesla Inc"
@@ -10,6 +11,10 @@ NEWS_ENDPOINT = "https://newsapi.org/v2/everything"
 # When stock price increase/decreases by 5% between yesterday and the day before yesterday then print("Get News").
 
 #TODO 1. - Get yesterday's closing stock price. Hint: You can perform list comprehensions on Python dictionaries. e.g. [new_value for (key, value) in dictionary.items()]
+
+# today_time=datetime.datetime.today()
+# print(today_time)
+
 Alpha_API_key= "K2VTRCGG6SCHN1BA"
 parameters={
 "function":"TIME_SERIES_INTRADAY",
@@ -17,17 +22,33 @@ parameters={
     "interval":"60min",
     "apikey":Alpha_API_key
 }
-
-response=requests.get(url=STOCK_ENDPOINT,params=parameters)
-response.raise_for_status()
-data=response.json()["Time Series (60min)"]  #["2025-11-21 19:00:00"]["4. close"]
-#[new_value for (key, value) in dictionary.items()
-# close_price=value["4. close"]
-closing_point=[float(value["4. close"])  for (key, value) in data.items()]
-print(closing_point)
-
-
+# Mp part to be improved
+# response=requests.get(url=STOCK_ENDPOINT,params=parameters)
+# response.raise_for_status()
+# data=response.json()["Time Series (60min)"] #["2025-11-21 19:00:00"] #["4. close"]
 # print(data)
+# closing_point=[float(value["4. close"])  for (key, value) in data.items()]
+# print(closing_point)
+
+
+
+
+# today_time=dt.datetime.now()
+# print(today_time)
+response = requests.get(url=STOCK_ENDPOINT, params=parameters)
+response.raise_for_status()
+json_data = response.json()
+# data2=response.json()["2025-11-21 19:00:00"]
+
+if "Time Series (60min)" in json_data:
+    data = json_data["Time Series (60min)"]
+    closing_point = [float(value["4. close"]) for key, value in data.items()]# if data2(today_time)[-1]]
+    print(closing_point[0])
+    print(closing_point[1])
+else:
+    print("API response error or rate limit hit:", json_data[0])
+# # morning idea let take yesterday and today by using index in final list
+
 
 
 #TODO 2. - Get the day before yesterday's closing stock price
